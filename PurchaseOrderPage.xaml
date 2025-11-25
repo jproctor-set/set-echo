@@ -53,7 +53,9 @@
                 </TextBlock>
 
 
-                <DataGrid Grid.Row="2"
+                <DataGrid 
+                          Name="DataGridPO"      
+                          Grid.Row="2"
                           ItemsSource="{Binding Orders}"
                           AutoGenerateColumns="False"
                           IsReadOnly="True"
@@ -66,7 +68,7 @@
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="PO #" Binding="{Binding PoNumber}" Width="120"/>
                         <DataGridTextColumn Header="Supplier" Binding="{Binding SupplierName}" Width="120"/>
-                        <DataGridTextColumn Header="Created" Binding="{Binding CreatedOn, StringFormat={}{0:d}}" Width="120"/>
+                        <DataGridTextColumn Header="Created" Binding="{Binding CreatedAt, StringFormat={}{0:d}}" Width="120"/>
                         <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="140"/>
                         <DataGridTextColumn Header="Total" Binding="{Binding Total, StringFormat=C}" Width="80"/>
                     </DataGrid.Columns>
