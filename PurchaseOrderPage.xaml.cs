@@ -25,7 +25,7 @@ namespace SETEcho
     public partial class PurchaseOrderPage : Page
     {
 
-        private readonly AppDbContext _db = new AppDbContext();
+        private readonly SETEchoDbContext _db = new SETEchoDbContext();
 
         public PurchaseOrderPage()
         {
@@ -35,7 +35,11 @@ namespace SETEcho
 
         private async void LoadData()
         {
-            var rows = await _db.PurchaseOrders.ToListAsync();
+            var rows = await _db.PurchaseOrders
+                .Include(po => po.Supplier)
+                //.Include(po => po.UpdatedByUser)
+                .ToListAsync();
+
             DataGridPO.ItemsSource = rows;
         }
 

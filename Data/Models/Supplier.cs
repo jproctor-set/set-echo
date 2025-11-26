@@ -44,4 +44,6 @@ public partial class Supplier
     public DateTime UpdatedAt { get; set; }
 
     public long UpdatedByUserId { get; set; }
+
+    public virtual ICollection<PurchaseOrder> PurchaseOrders { get; set; } = new List<PurchaseOrder>();
 }

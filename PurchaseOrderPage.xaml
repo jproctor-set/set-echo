@@ -56,7 +56,6 @@
                 <DataGrid 
                           Name="DataGridPO"      
                           Grid.Row="2"
-                          ItemsSource="{Binding Orders}"
                           AutoGenerateColumns="False"
                           IsReadOnly="True"
                           CanUserAddRows="False"
@@ -67,10 +66,11 @@
                           AlternationCount="2" RowBackground="White" AlternatingRowBackground="Beige">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="PO #" Binding="{Binding PoNumber}" Width="120"/>
-                        <DataGridTextColumn Header="Supplier" Binding="{Binding SupplierName}" Width="120"/>
-                        <DataGridTextColumn Header="Created" Binding="{Binding CreatedAt, StringFormat={}{0:d}}" Width="120"/>
+                        <DataGridTextColumn Header="Supplier" Binding="{Binding Supplier.SupplierName}" Width="120"/>
                         <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="140"/>
-                        <DataGridTextColumn Header="Total" Binding="{Binding Total, StringFormat=C}" Width="80"/>
+                        <DataGridTextColumn Header="Total" Binding="{Binding TotalAmount, StringFormat=C}" Width="80"/>
+                        <DataGridTextColumn Header="Date modified" Binding="{Binding UpdatedAt, StringFormat={}{0:d} {0:HH:mm tt}}" Width="150"/>
+                        <DataGridTextColumn Header="Modified by" Binding="{Binding UpdatedByUserId.UserName}" Width="100"/>
                     </DataGrid.Columns>
 
 
@@ -78,7 +78,7 @@
                     <DataGrid.Style>
                         <Style TargetType="DataGrid">
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding Orders.Count}" Value="0">
+                                <DataTrigger Binding="{Binding PurchaseOrder.Count}" Value="0">
                                     <Setter Property="Template">
                                         <Setter.Value>
                                             <ControlTemplate TargetType="DataGrid">

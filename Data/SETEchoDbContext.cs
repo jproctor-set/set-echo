@@ -1,18 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using Microsoft.EntityFrameworkCore;
-using SETEcho.Data.Models;
 
-namespace SETEcho.Data;
+namespace SETEcho.Data.Models;
 
-public partial class AppDbContext : DbContext
+public partial class SETEchoDbContext : DbContext
 {
-    public AppDbContext()
+    public SETEchoDbContext()
     {
     }
 
-    public AppDbContext(DbContextOptions<AppDbContext> options)
+    public SETEchoDbContext(DbContextOptions<SETEchoDbContext> options)
         : base(options)
     {
     }
@@ -29,15 +27,11 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<Supplier> Suppliers { get; set; }
 
-    public virtual DbSet<TblBom> TblBoms { get; set; }
-
-    public virtual DbSet<TblPart> TblParts { get; set; }
-
-    public virtual DbSet<TblUser> TblUsers { get; set; }
+    public virtual DbSet<User> Users { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer(ConfigurationManager.ConnectionStrings["SETEchoDB"].ConnectionString);
+        => optionsBuilder.UseSqlServer("Data Source=tcp:SETSERV002,49172;Initial Catalog=SETEcho;Integrated Security=True;Encrypt=False;Trust Server Certificate=True");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -51,7 +45,7 @@ public partial class AppDbContext : DbContext
 
             entity.HasIndex(e => e.Status, "IX_PurchaseOrder_status");
 
-            entity.HasIndex(e => new { e.VendorId, e.PoDate }, "IX_PurchaseOrder_supplier_date").IsDescending(false, true);
+            entity.HasIndex(e => new { e.SupplierId, e.PoDate }, "IX_PurchaseOrder_supplier_date").IsDescending(false, true);
 
             entity.HasIndex(e => e.PoNumber, "UX_PurchaseOrder_po_number").IsUnique();
 
@@ -101,6 +95,7 @@ public partial class AppDbContext : DbContext
                 .HasMaxLength(30)
                 .IsUnicode(false)
                 .HasColumnName("status");
+            entity.Property(e => e.SupplierId).HasColumnName("supplier_id");
             entity.Property(e => e.TotalAmount)
                 .HasColumnType("decimal(18, 2)")
                 .HasColumnName("total_amount");
@@ -109,7 +104,11 @@ public partial class AppDbContext : DbContext
                 .HasDefaultValueSql("(sysutcdatetime())")
                 .HasColumnName("updated_at");
             entity.Property(e => e.UpdatedByUserId).HasColumnName("updated_by_user_id");
-            entity.Property(e => e.VendorId).HasColumnName("vendor_id");
+
+            entity.HasOne(d => d.Supplier).WithMany(p => p.PurchaseOrders)
+                .HasForeignKey(d => d.SupplierId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_SupplierID_Supplier");
         });
 
         modelBuilder.Entity<PurchaseOrder1>(entity =>
@@ -362,101 +361,35 @@ public partial class AppDbContext : DbContext
                 .HasColumnName("website");
         });
 
-        modelBuilder.Entity<TblBom>(entity =>
+        modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.BomId);
+            entity.ToTable("User");
 
-            entity.ToTable("tbl_BOM");
-
-            entity.Property(e => e.BomId).HasColumnName("bomID");
-            entity.Property(e => e.ChildPartId).HasColumnName("childPartID");
-            entity.Property(e => e.ParentPartId).HasColumnName("parentPartID");
-            entity.Property(e => e.Quantity)
-                .HasColumnType("decimal(10, 2)")
-                .HasColumnName("quantity");
-
-            entity.HasOne(d => d.ChildPart).WithMany(p => p.TblBomChildParts)
-                .HasForeignKey(d => d.ChildPartId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbl_BOM_tbl_Parts");
-
-            entity.HasOne(d => d.ParentPart).WithMany(p => p.TblBomParentParts)
-                .HasForeignKey(d => d.ParentPartId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_tbl_BOM_tbl_Parts1");
-        });
-
-        modelBuilder.Entity<TblPart>(entity =>
-        {
-            entity.HasKey(e => e.PartId);
-
-            entity.ToTable("tbl_Parts");
-
-            entity.Property(e => e.PartId).HasColumnName("partID");
-            entity.Property(e => e.CompanyId).HasColumnName("companyID");
-            entity.Property(e => e.Notes1)
-                .HasMaxLength(50)
-                .HasColumnName("notes1");
-            entity.Property(e => e.Notes10)
-                .HasMaxLength(50)
-                .HasColumnName("notes10");
-            entity.Property(e => e.Notes2)
-                .HasMaxLength(50)
-                .HasColumnName("notes2");
-            entity.Property(e => e.Notes3)
-                .HasMaxLength(50)
-                .HasColumnName("notes3");
-            entity.Property(e => e.Notes4)
-                .HasMaxLength(50)
-                .HasColumnName("notes4");
-            entity.Property(e => e.Notes5)
-                .HasMaxLength(50)
-                .HasColumnName("notes5");
-            entity.Property(e => e.Notes6)
-                .HasMaxLength(50)
-                .HasColumnName("notes6");
-            entity.Property(e => e.Notes7)
-                .HasMaxLength(50)
-                .HasColumnName("notes7");
-            entity.Property(e => e.Notes8)
-                .HasMaxLength(50)
-                .HasColumnName("notes8");
-            entity.Property(e => e.Notes9)
-                .HasMaxLength(50)
-                .HasColumnName("notes9");
-            entity.Property(e => e.PartDescription)
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Email)
                 .HasMaxLength(255)
-                .HasColumnName("partDescription");
-            entity.Property(e => e.PartNumber)
-                .HasMaxLength(100)
-                .HasColumnName("partNumber");
-            entity.Property(e => e.PartTypeId).HasColumnName("partTypeID");
-            entity.Property(e => e.PartUnitId).HasColumnName("partUnitID");
-            entity.Property(e => e.SupplierId).HasColumnName("supplierID");
-        });
-
-        modelBuilder.Entity<TblUser>(entity =>
-        {
-            entity.HasKey(e => e.UserId);
-
-            entity.ToTable("tbl_Users");
-
-            entity.Property(e => e.UserId).HasColumnName("userID");
+                .IsUnicode(false)
+                .HasColumnName("email");
             entity.Property(e => e.FirstName)
                 .HasMaxLength(50)
-                .HasColumnName("firstName");
+                .IsUnicode(false)
+                .HasColumnName("first_name");
             entity.Property(e => e.LastName)
                 .HasMaxLength(50)
-                .HasColumnName("lastName");
-            entity.Property(e => e.PassWordHash)
-                .HasMaxLength(256)
-                .HasColumnName("passWordHash");
-            entity.Property(e => e.UserName)
+                .IsUnicode(false)
+                .HasColumnName("last_name");
+            entity.Property(e => e.Password)
+                .HasMaxLength(25)
+                .IsUnicode(false)
+                .HasColumnName("password");
+            entity.Property(e => e.Phone)
                 .HasMaxLength(50)
-                .HasColumnName("userName");
-            entity.Property(e => e.UserRole)
-                .HasMaxLength(50)
-                .HasColumnName("userRole");
+                .IsUnicode(false)
+                .HasColumnName("phone");
+            entity.Property(e => e.Username)
+                .HasMaxLength(25)
+                .IsUnicode(false)
+                .HasColumnName("username");
         });
 
         OnModelCreatingPartial(modelBuilder);

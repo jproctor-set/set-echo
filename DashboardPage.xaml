@@ -9,6 +9,13 @@
       Title="DashboardPage">
 
     <Grid>
-        <Button x:Name="btn_PO" Content="Purchase Orders" HorizontalAlignment="Left" Height="44" Margin="256,225,0,0" VerticalAlignment="Top" Width="98" Click="btn_PO_Click"/>
+        <Button x:Name="btn_PO" Content="Purchase Orders" HorizontalAlignment="Left" Height="44" Margin="256,225,0,0" VerticalAlignment="Top" Width="98" Click="btn_PO_Click">
+            <Button.Resources>
+            <Style TargetType="Border">
+                <Setter Property="CornerRadius"
+                        Value="8"/>
+            </Style>
+            </Button.Resources>
+        </Button>
     </Grid>
 </Page>

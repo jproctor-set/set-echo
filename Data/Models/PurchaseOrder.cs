@@ -9,7 +9,7 @@ public partial class PurchaseOrder
 
     public string PoNumber { get; set; } = null!;
 
-    public long VendorId { get; set; }
+    public long SupplierId { get; set; }
 
     public long BuyerId { get; set; }
 
@@ -60,4 +60,6 @@ public partial class PurchaseOrder
     public virtual ICollection<PurchaseOrderLine> PurchaseOrderLines { get; set; } = new List<PurchaseOrderLine>();
 
     public virtual ICollection<PurchaseOrderStatusHistory> PurchaseOrderStatusHistories { get; set; } = new List<PurchaseOrderStatusHistory>();
+
+    public virtual Supplier Supplier { get; set; } = null!;
 }
