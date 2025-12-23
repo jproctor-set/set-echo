@@ -54,9 +54,10 @@
 
 
                 <DataGrid 
-                          Name="DataGridPO"      
+                          Name="DataGridPO"
                           Grid.Row="2"
                           AutoGenerateColumns="False"
+                          ColumnWidth="*"
                           IsReadOnly="True"
                           CanUserAddRows="False"
                           HeadersVisibility="Column"
@@ -65,12 +66,12 @@
                           SelectionMode="Single"
                           AlternationCount="2" RowBackground="White" AlternatingRowBackground="Beige">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="PO #" Binding="{Binding PoNumber}" Width="120"/>
-                        <DataGridTextColumn Header="Supplier" Binding="{Binding Supplier.SupplierName}" Width="120"/>
-                        <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="140"/>
-                        <DataGridTextColumn Header="Total" Binding="{Binding TotalAmount, StringFormat=C}" Width="80"/>
-                        <DataGridTextColumn Header="Date modified" Binding="{Binding UpdatedAt, StringFormat={}{0:d} {0:HH:mm tt}}" Width="150"/>
-                        <DataGridTextColumn Header="Modified by" Binding="{Binding UpdatedByUserId.UserName}" Width="100"/>
+                        <DataGridTextColumn Header="PO #" Binding="{Binding PoNumber}" Width="*"/>
+                        <DataGridTextColumn Header="Supplier" Binding="{Binding Supplier.SupplierName}" Width="*"/>
+                        <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="*"/>
+                        <DataGridTextColumn Header="Total" Binding="{Binding TotalAmount, StringFormat=C}" Width="*"/>
+                        <DataGridTextColumn Header="Date modified" Binding="{Binding UpdatedAt, StringFormat={}{0:d} {0:HH:mm tt}}" Width="*"/>
+                        <DataGridTextColumn Header="Modified by" Binding="{Binding UpdatedByUser.Username}" Width="*"/>
                     </DataGrid.Columns>
 
 
